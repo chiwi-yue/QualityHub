@@ -54,7 +54,7 @@ describe('TaskAPI provider contract verification', () => {
       logLevel: 'warn',
 
       // Replace the placeholder token from consumer interactions with a real JWT
-      requestFilter: (req, _res, next) => {
+      requestFilter: (req: Record<string, any>, _res: Record<string, any>, next: () => void) => {
         if (!req.headers['authorization'] || req.headers['authorization'] === 'Bearer token') {
           req.headers['authorization'] = `Bearer ${testToken}`;
         }
