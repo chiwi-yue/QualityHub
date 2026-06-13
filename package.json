@@ -9,7 +9,10 @@
     "start:api": "node apps/task-api/server.js",
     "test:contract": "vitest run",
     "test:contract:consumer": "vitest run contract/consumer.spec.ts",
-    "test:contract:provider": "vitest run contract/provider.spec.ts"
+    "test:contract:provider": "vitest run contract/provider.spec.ts",
+    "perf:smoke": "k6 run performance/smoke.js",
+    "perf:load": "k6 run performance/load.js",
+    "perf:stress": "k6 run performance/stress.js"
   },
   "devDependencies": {
     "@pact-foundation/pact": "^16.5.0",

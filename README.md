@@ -13,6 +13,7 @@ A quality engineering portfolio project demonstrating E2E UI automation, API tes
 | UI / E2E | Playwright (TypeScript) | 1.52+ |
 | API | Karate (JUnit5 / Maven) | 1.4.1 |
 | Contract | Pact (consumer-driven) | 16.x |
+| Performance | k6 | 2.x |
 | CI | GitHub Actions | — |
 | Language | Node.js / Java | 22 / 21 |
 
@@ -36,6 +37,11 @@ QualityHub/
 │   ├── consumer.spec.ts             # Defines what TaskUI expects from TaskAPI
 │   ├── provider.spec.ts             # Verifies TaskAPI meets the contract
 │   └── pacts/TaskUI-TaskAPI.json    # Generated contract file
+├── performance/                     # k6 performance tests
+│   ├── smoke.js                     # 1 VU, 30s — confirms API responds
+│   ├── load.js                      # 10 VUs, ramp + sustain — SLO validation
+│   ├── stress.js                    # Up to 100 VUs — find breaking point
+│   └── lib/auth.js                  # Shared auth helper
 ├── karate/                          # Karate API tests (Maven/JUnit5)
 │   └── src/test/resources/com/qualityhub/
 │       ├── tasks.feature            # Auth + CRUD lifecycle against task-api
@@ -82,6 +88,11 @@ npm run test:contract:consumer
 
 # Contract provider only (verifies against pact file)
 npm run test:contract:provider
+
+# k6 performance tests (requires task-api running: npm run start:api)
+npm run perf:smoke    # 1 VU, 30s — quick sanity check
+npm run perf:load     # 10 VUs, ramp + sustain — SLO validation
+npm run perf:stress   # up to 100 VUs — find breaking point (manual only)
 ```
 
 ## What's Tested
