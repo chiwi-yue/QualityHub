@@ -6,6 +6,8 @@ dist/
 playwright-report/
 test-results/
 .playwright/
+allure-results/
+allure-report/
 
 # Maven
 karate/target/

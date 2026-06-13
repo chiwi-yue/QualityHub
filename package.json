@@ -16,13 +16,17 @@
     "perf:stress": "k6 run performance/stress.js",
     "seed": "node tools/seed.js",
     "seed:save": "node tools/seed.js --seed 42 --save",
-    "mask": "node tools/mask.js data/fixtures/seeded.json --out data/fixtures/masked.json"
+    "mask": "node tools/mask.js data/fixtures/seeded.json --out data/fixtures/masked.json",
+    "allure:generate": "allure generate allure-results --clean -o allure-report",
+    "allure:open": "allure open allure-report"
   },
   "devDependencies": {
     "@faker-js/faker": "^10.4.0",
     "@pact-foundation/pact": "^16.5.0",
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.0.0",
+    "allure-commandline": "^2.42.1",
+    "allure-playwright": "^3.10.0",
     "typescript": "^5.7.0",
     "vitest": "^4.1.8",
     "wait-on": "^9.0.10"
