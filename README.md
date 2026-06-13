@@ -134,9 +134,8 @@ QualityHub/
 │   │   └── TodoPage.ts              # Page Object — TodoMVC
 │   ├── global-setup.ts              # Pre-registers fixture users before suite
 │   ├── fixtures.ts                  # Typed fixture user loader
-│   ├── tasks.spec.ts                # E2E tests against task-api UI
-│   ├── todo.spec.ts                 # E2E tests — TodoMVC
-│   └── example.spec.ts              # Smoke test — playwright.dev
+│   ├── tasks.spec.ts                # E2E tests against task-api UI (primary)
+│   └── todo.spec.ts                 # POM demonstration — TodoMVC
 ├── contract/                        # Vitest + Pact contract tests
 │   ├── consumer.spec.ts             # Defines what TaskUI expects from TaskAPI
 │   ├── provider.spec.ts             # Verifies TaskAPI meets the contract
@@ -216,14 +215,19 @@ npm run mask          # obfuscate PII in seeded.json → masked.json
 
 ## What's Tested
 
-**Playwright — task-api UI**
+**Playwright — task-api UI (primary suite)**
 - Register a new user and land on the tasks view
 - Add a single task; add multiple tasks
 - Delete a task
 - Complete a task (visual verification)
 - Invalid login shows error message
 - Logout returns to login screen
-- TodoMVC: add, complete, filter, clear (Page Object Model)
+
+**Playwright — TodoMVC (POM demonstration)**
+- Add single and multiple todos
+- Complete a todo, verify in Completed filter
+- Clear completed todos
+- Active filter shows only incomplete items
 
 **Karate — task-api REST API**
 - Register + login — JWT returned

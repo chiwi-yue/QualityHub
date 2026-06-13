@@ -1,7 +1,12 @@
+// POM demonstration against a stable third-party UI.
+// TodoMVC is used here specifically because its DOM is well-defined and
+// unchanging — making it a reliable surface to show Page Object patterns
+// (encapsulated locators, reusable actions, filter navigation) without
+// the noise of a flaky external dependency.
 import { test, expect } from '@playwright/test';
 import { TodoPage } from './pages/TodoPage';
 
-test.describe('TodoMVC', () => {
+test.describe('TodoMVC — POM demonstration', () => {
   let todoPage: TodoPage;
 
   test.beforeEach(async ({ page }) => {
