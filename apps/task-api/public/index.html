@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>QualityHub Tasks</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+    h1 { margin-bottom: 24px; }
+    .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; width: 100%; }
+    button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    .btn-primary { background: #2563eb; color: white; }
+    .btn-secondary { background: #e5e7eb; color: #111; }
+    .btn-danger { background: #dc2626; color: white; }
+    .btn-sm { padding: 4px 10px; font-size: 12px; }
+    .error { color: #dc2626; font-size: 13px; min-height: 18px; margin-top: 4px; }
+    .row { display: flex; gap: 8px; }
+    #tasks-section { display: none; }
+    .task-item { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid #e5e7eb; border-radius: 4px; margin-bottom: 8px; }
+    .task-item.completed span { text-decoration: line-through; color: #9ca3af; }
+    .task-item span { flex: 1; }
+    #user-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #374151; }
+  </style>
+</head>
+<body>
+  <h1>QualityHub</h1>
+
+  <section id="auth-section">
+    <div class="field">
+      <input id="username" data-testid="username-input" placeholder="Username" autocomplete="username" />
+    </div>
+    <div class="field">
+      <input id="password" data-testid="password-input" type="password" placeholder="Password" autocomplete="current-password" />
+    </div>
+    <div class="row">
+      <button id="login-btn" data-testid="login-btn" class="btn-primary">Login</button>
+      <button id="register-btn" data-testid="register-btn" class="btn-secondary">Register</button>
+    </div>
+    <p id="auth-error" data-testid="auth-error" class="error"></p>
+  </section>
+
+  <section id="tasks-section">
+    <div id="user-info">
+      <span data-testid="logged-in-user"></span>
+      <button id="logout-btn" data-testid="logout-btn" class="btn-secondary btn-sm">Logout</button>
+    </div>
+    <div class="row" style="margin-bottom:20px">
+      <input id="new-task-input" data-testid="new-task-input" placeholder="New task title" />
+      <button id="add-task-btn" data-testid="add-task-btn" class="btn-primary">Add</button>
+    </div>
+    <div id="task-list" data-testid="task-list"></div>
+  </section>
+
+  <script>
+    const API = '';
+    let token = localStorage.getItem('qh_token');
+    let currentUser = localStorage.getItem('qh_user');
+
+    async function apiFetch(path, opts = {}) {
+      const res = await fetch(API + path, {
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
+        ...opts,
+      });
+      if (res.status === 204) return null;
+      return res.json().then(data => ({ ok: res.ok, status: res.status, data }));
+    }
+
+    function showTasks() {
+      document.getElementById('auth-section').style.display = 'none';
+      document.getElementById('tasks-section').style.display = 'block';
+      document.querySelector('[data-testid="logged-in-user"]').textContent = currentUser;
+      loadTasks();
+    }
+
+    function showAuth() {
+      document.getElementById('auth-section').style.display = 'block';
+      document.getElementById('tasks-section').style.display = 'none';
+    }
+
+    async function loadTasks() {
+      const { data } = await apiFetch('/api/tasks');
+      const list = document.getElementById('task-list');
+      list.innerHTML = data.map(t => `
+        <div class="task-item ${t.completed ? 'completed' : ''}" data-testid="task-item" data-id="${t.id}">
+          <input type="checkbox" data-testid="task-checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask(${t.id}, this.checked)" />
+          <span data-testid="task-title">${t.title}</span>
+          <button class="btn-danger btn-sm" data-testid="delete-task-btn" onclick="deleteTask(${t.id})">Delete</button>
+        </div>`).join('');
+    }
+
+    async function toggleTask(id, completed) {
+      const item = document.querySelector(`[data-id="${id}"] [data-testid="task-title"]`);
+      await apiFetch('/api/tasks/' + id, { method: 'PUT', body: JSON.stringify({ title: item.textContent, completed }) });
+      loadTasks();
+    }
+
+    async function deleteTask(id) {
+      await apiFetch('/api/tasks/' + id, { method: 'DELETE' });
+      loadTasks();
+    }
+
+    document.getElementById('login-btn').addEventListener('click', async () => {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const { ok, data } = await apiFetch('/api/auth/login', { method: 'POST', body: JSON.stringify({ username, password }) });
+      if (!ok) { document.getElementById('auth-error').textContent = data.error; return; }
+      token = data.token; currentUser = username;
+      localStorage.setItem('qh_token', token); localStorage.setItem('qh_user', username);
+      document.getElementById('auth-error').textContent = '';
+      showTasks();
+    });
+
+    document.getElementById('register-btn').addEventListener('click', async () => {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const { ok, data } = await apiFetch('/api/auth/register', { method: 'POST', body: JSON.stringify({ username, password }) });
+      if (!ok) { document.getElementById('auth-error').textContent = data.error; return; }
+      token = data.token; currentUser = username;
+      localStorage.setItem('qh_token', token); localStorage.setItem('qh_user', username);
+      document.getElementById('auth-error').textContent = '';
+      showTasks();
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      token = null; currentUser = null;
+      localStorage.removeItem('qh_token'); localStorage.removeItem('qh_user');
+      showAuth();
+    });
+
+    document.getElementById('add-task-btn').addEventListener('click', async () => {
+      const input = document.getElementById('new-task-input');
+      if (!input.value.trim()) return;
+      await apiFetch('/api/tasks', { method: 'POST', body: JSON.stringify({ title: input.value.trim() }) });
+      input.value = '';
+      loadTasks();
+    });
+
+    document.getElementById('new-task-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('add-task-btn').click();
+    });
+
+    if (token) showTasks(); else showAuth();
+  </script>
+</body>
+</html>

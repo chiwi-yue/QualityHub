@@ -17,8 +17,12 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install root dependencies
         run: npm ci
+
+      - name: Install task-api dependencies
+        run: npm ci
+        working-directory: apps/task-api
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium

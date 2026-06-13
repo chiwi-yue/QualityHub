@@ -10,6 +10,11 @@ export default defineConfig({
   use: {
     trace: 'on-first-retry',
   },
+  webServer: {
+    command: 'npm run start:api',
+    url: 'http://localhost:3001/api/health',
+    reuseExistingServer: !process.env.CI,
+  },
   projects: [
     {
       name: 'chromium',

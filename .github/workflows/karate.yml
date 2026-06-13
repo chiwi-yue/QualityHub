@@ -12,11 +12,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
       - uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
+
+      - name: Install task-api dependencies
+        run: npm ci
+        working-directory: apps/task-api
+
+      - name: Start task-api
+        run: node apps/task-api/server.js &
+
+      - name: Wait for task-api to be ready
+        run: npx wait-on http://localhost:3001/api/health --timeout 15000
 
       - name: Run Karate tests
         working-directory: karate
