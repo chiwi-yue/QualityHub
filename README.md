@@ -53,6 +53,57 @@ Tests own their data. Each E2E test registers a unique user (`user_${Date.now()}
 
 ---
 
+## CI Pipeline
+
+Every push to `main` triggers four independent workflow jobs in parallel:
+
+```
+git push
+    │
+    ├── playwright.yml ──► npm test (14 E2E tests, Chromium)
+    │                          └── allure generate → deploy to GitHub Pages
+    │
+    ├── karate.yml ──────► mvn test (16 API tests, Java 21)
+    │
+    ├── contract.yml ────► vitest run consumer → vitest run provider
+    │                          └── uploads pacts/TaskUI-TaskAPI.json as artifact
+    │
+    └── performance.yml ─► k6 smoke → k6 load (quality gates as thresholds)
+                               └── uploads k6-summary.json as artifact
+```
+
+All four must pass for a merge to be considered clean. The Playwright job additionally deploys the Allure HTML report to GitHub Pages on every successful `main` push — giving a live, human-readable test report at:
+
+**https://chiwi-yue.github.io/QualityHub/**
+
+The report shows test timeline, individual step breakdown, pass/fail history, and failure screenshots — without needing to dig into CI logs.
+
+---
+
+## Key Engineering Decisions
+
+These are the non-obvious choices made and why.
+
+**Vitest instead of Jest for contract tests**
+`@pact-foundation/pact` v16 uses native ESM internally. Jest 30 requires Node 24+ to handle synchronous ESM VM APIs; CI runs Node 22. Vitest handles native ESM without shims and requires zero configuration changes to the test files.
+
+**Top-level directory per test runner**
+Playwright, Vitest, and k6 all have greedy glob patterns. Nesting them under a shared `tests/` directory caused Playwright to pick up Pact spec files. Separating into `e2e/`, `contract/`, `karate/`, `performance/` prevents runners from accidentally executing each other's tests.
+
+**`waitForResponse` in Playwright page objects**
+After clicking "Add Task", the DOM update is driven by an async `fetch`. Without waiting for the POST response to complete, assertions on task count would race against the network call and fail intermittently. The fix is in `TasksPage.addTask()` and `TasksPage.deleteTask()` — both gate on the API response before returning.
+
+**`setup()` for k6 auth, not inline**
+Calling `register` inside the default function (the VU loop) means auth requests pollute the performance metrics and 10 VUs race on registration simultaneously. `setup()` runs once before VUs start, pre-registers all users, and passes tokens in — so the measurement window contains only task CRUD traffic.
+
+**Consumer-driven contracts with real JWT injection**
+The Pact consumer spec uses `'Bearer token'` as a placeholder. The provider verifier's `requestFilter` intercepts every request and replaces that placeholder with a real JWT obtained from a pre-registered test user. This lets the provider run its full auth middleware without the consumer needing to know credentials.
+
+**`faker.seed(42)` for committed fixtures**
+Unseeded Faker generates different output on every run, which means `data/fixtures/seeded.json` would change on every `npm run seed:save` — noisy diffs, no stable baseline. A fixed seed produces identical usernames, passwords, and task titles every time while still looking like realistic data.
+
+---
+
 ## Stack
 
 | Layer | Tool | Version |
