@@ -7,7 +7,8 @@ A quality engineering portfolio demonstrating a complete, layered test strategy 
 [![Contract Tests](https://github.com/chiwi-yue/QualityHub/actions/workflows/contract.yml/badge.svg)](https://github.com/chiwi-yue/QualityHub/actions/workflows/contract.yml)
 [![Performance Tests](https://github.com/chiwi-yue/QualityHub/actions/workflows/performance.yml/badge.svg)](https://github.com/chiwi-yue/QualityHub/actions/workflows/performance.yml)
 
-**Live Allure Report:** https://chiwi-yue.github.io/QualityHub/
+**Live Allure Report:** https://chiwi-yue.github.io/QualityHub/  
+**Test Strategy:** [docs/TEST_STRATEGY.md](docs/TEST_STRATEGY.md)
 
 ---
 
