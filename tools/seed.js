@@ -52,7 +52,14 @@ async function seedUser() {
   const username = faker.internet.username().replace(/[^a-zA-Z0-9_]/g, '_').slice(0, 20);
   const password = faker.internet.password({ length: 12, memorable: false });
 
-  const { token } = await post('/api/auth/register', { username, password });
+  // Register the user; if already exists (e.g. re-running against a live server), log in instead
+  let token;
+  try {
+    ({ token } = await post('/api/auth/register', { username, password }));
+  } catch (err) {
+    if (!err.message.includes('409')) throw err;
+    ({ token } = await post('/api/auth/login', { username, password }));
+  }
 
   const tasks = [];
   for (let i = 0; i < TASKS_PER_USER; i++) {
