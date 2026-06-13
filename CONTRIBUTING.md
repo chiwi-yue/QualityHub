@@ -41,8 +41,8 @@ Before `npm install <pkg>`, do a 30-second check:
 Each runner owns a top-level directory. Never nest one runner's tests inside another's scan path:
 
 ```
-e2e/          ← Playwright (testDir: './e2e')
-contract/     ← Vitest + Pact
+e2e/          ← Playwright  (testDir: './e2e')
+contract/     ← Vitest/Pact (include: ['contract/**/*.spec.ts'])
 karate/       ← Maven/JUnit5
 ```
 

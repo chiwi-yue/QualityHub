@@ -9,5 +9,5 @@
     "outDir": "dist",
     "baseUrl": "."
   },
-  "include": ["tests/**/*.ts", "playwright.config.ts"]
+  "include": ["e2e/**/*.ts", "contract/**/*.ts", "playwright.config.ts"]
 }

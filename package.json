@@ -8,8 +8,8 @@
     "test:report": "playwright show-report",
     "start:api": "node apps/task-api/server.js",
     "test:contract": "vitest run",
-    "test:contract:consumer": "vitest run tests/contract/consumer.spec.ts",
-    "test:contract:provider": "vitest run tests/contract/provider.spec.ts"
+    "test:contract:consumer": "vitest run contract/consumer.spec.ts",
+    "test:contract:provider": "vitest run contract/provider.spec.ts"
   },
   "devDependencies": {
     "@pact-foundation/pact": "^16.5.0",

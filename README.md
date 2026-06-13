@@ -24,19 +24,19 @@ QualityHub/
 │   └── task-api/                    # Express REST API — the system under test
 │       ├── server.js                # JWT auth + tasks CRUD (in-memory)
 │       └── public/index.html        # Minimal task manager UI
-├── tests/
+├── e2e/                             # Playwright E2E tests (testDir: './e2e')
 │   ├── pages/
 │   │   ├── LoginPage.ts             # Page Object — auth forms
 │   │   ├── TasksPage.ts             # Page Object — task list interactions
-│   │   └── TodoPage.ts              # Page Object — TodoMVC (Day 2 demo)
-│   ├── contract/
-│   │   ├── consumer.spec.ts         # Pact consumer — defines API contract
-│   │   ├── provider.spec.ts         # Pact provider — verifies task-api
-│   │   └── pacts/TaskUI-TaskAPI.json # Generated contract file
+│   │   └── TodoPage.ts              # Page Object — TodoMVC
 │   ├── tasks.spec.ts                # E2E tests against task-api UI
-│   ├── todo.spec.ts                 # E2E tests — TodoMVC (Day 2 demo)
+│   ├── todo.spec.ts                 # E2E tests — TodoMVC
 │   └── example.spec.ts             # Smoke test — playwright.dev
-├── karate/
+├── contract/                        # Vitest + Pact contract tests
+│   ├── consumer.spec.ts             # Defines what TaskUI expects from TaskAPI
+│   ├── provider.spec.ts             # Verifies TaskAPI meets the contract
+│   └── pacts/TaskUI-TaskAPI.json    # Generated contract file
+├── karate/                          # Karate API tests (Maven/JUnit5)
 │   └── src/test/resources/com/qualityhub/
 │       ├── tasks.feature            # Auth + CRUD lifecycle against task-api
 │       ├── posts.feature            # JSONPlaceholder — data-driven outline

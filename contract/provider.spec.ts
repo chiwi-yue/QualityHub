@@ -25,7 +25,7 @@ async function waitForServer(url: string, timeout = 10000): Promise<void> {
 beforeAll(async () => {
   server = spawn('node', ['apps/task-api/server.js'], {
     env: { ...process.env, PORT: '3002' },
-    cwd: path.resolve(__dirname, '../..'),
+    cwd: path.resolve(__dirname, '..'),
   });
   server.stderr?.on('data', (d: Buffer) => process.stderr.write(d));
 
