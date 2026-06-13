@@ -74,7 +74,7 @@ async function seedUser() {
     tasks.push(task);
   }
 
-  return { username, password, token, tasks };
+  return { username, password, tasks };
 }
 
 async function run() {
