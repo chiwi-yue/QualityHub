@@ -18,6 +18,11 @@ karate/target/
 .idea/
 *.iml
 
+# Pact
+pact/logs/
+pact/tmp/
+tests/contract/pacts/*.log
+
 # Env
 .env
 .env.local

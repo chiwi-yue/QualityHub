@@ -6,11 +6,18 @@
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report",
-    "start:api": "node apps/task-api/server.js"
+    "start:api": "node apps/task-api/server.js",
+    "test:contract": "node --experimental-vm-modules node_modules/.bin/jest",
+    "test:contract:consumer": "node --experimental-vm-modules node_modules/.bin/jest --testPathPatterns=consumer",
+    "test:contract:provider": "node --experimental-vm-modules node_modules/.bin/jest --testPathPatterns=provider"
   },
   "devDependencies": {
+    "@pact-foundation/pact": "^16.5.0",
     "@playwright/test": "^1.52.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^22.0.0",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.11",
     "typescript": "^5.7.0",
     "wait-on": "^9.0.10"
   }
