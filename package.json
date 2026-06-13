@@ -2,6 +2,7 @@
   "name": "qualityhub",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "test": "playwright test",
     "test:ui": "playwright test --ui",
@@ -12,9 +13,13 @@
     "test:contract:provider": "vitest run contract/provider.spec.ts",
     "perf:smoke": "k6 run performance/smoke.js",
     "perf:load": "k6 run performance/load.js",
-    "perf:stress": "k6 run performance/stress.js"
+    "perf:stress": "k6 run performance/stress.js",
+    "seed": "node tools/seed.js",
+    "seed:save": "node tools/seed.js --seed 42 --save",
+    "mask": "node tools/mask.js data/fixtures/seeded.json --out data/fixtures/masked.json"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
     "@pact-foundation/pact": "^16.5.0",
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.0.0",
