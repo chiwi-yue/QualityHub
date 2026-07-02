@@ -24,7 +24,7 @@
     "@faker-js/faker": "^10.4.0",
     "@pact-foundation/pact": "^16.5.0",
     "@playwright/test": "^1.52.0",
-    "@types/node": "^22.0.0",
+    "@types/node": "^22.20.0",
     "allure-commandline": "^2.42.1",
     "allure-playwright": "^3.10.0",
     "typescript": "^5.7.0",
